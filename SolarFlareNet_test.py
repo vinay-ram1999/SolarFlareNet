@@ -28,20 +28,25 @@ from SolarFlareNet_model import SolarFlareNet
 
 def test(time_window, flare_class):
     log('Testing is initiated for time_window:', time_window, 'and flare class:', flare_class,verbose=True)
+    X_train, y_train = get_training_data(time_window, flare_class)
+    y_train_tr = data_transform(y_train)
+
     X_test, y_test = get_testing_data(time_window, flare_class)
     y_test_tr = data_transform(y_test)
     y_true = y_test_tr[:]
     input_shape = (X_test.shape[1], X_test.shape[2])
     
-    w_dir = 'models' +os.sep + str(time_window) + os.sep + str(flare_class)
+    #w_dir = 'models' +os.sep + str(time_window) + os.sep + str(flare_class)
+    w_dir = 'interpret_models' +os.sep + str(time_window) + os.sep + str(flare_class)
     
     model = SolarFlareNet()
     model.load_model(input_shape,flare_class,w_dir=w_dir)
     
-    y_test_tr = y_test_tr.reshape(y_test_tr.shape[0],1,y_test_tr.shape[1])
+    #y_test_tr = y_test_tr.reshape(y_test_tr.shape[0],1,y_test_tr.shape[1])
     log('Predicting test data set samples..',verbose=True)
     prediction = model.predict(X_test)
     save_result(flare_class,time_window, y_true, prediction, alg='SolarFlareNet')
+    return model, [X_train, y_train_tr], [X_test, y_test_tr]
     
 if __name__ == '__main__':
     time_window = str(sys.argv[1]).strip().upper()

@@ -30,15 +30,16 @@ def train(time_window, flare_class):
     log('Training is initiated for time window:', time_window, 'and flare class:', flare_class,verbose=True)   
     X_train, y_train = get_training_data(time_window, flare_class)
     y_train_tr = data_transform(y_train)
-    epochs=20
+    epochs=1
     input_shape = (X_train.shape[1], X_train.shape[2])
-    model = SolarFlareNet()
     
+    model = SolarFlareNet()
     model.build_base_model(input_shape)
     model.models()
     model.compile()
-    y_train_tr = y_train_tr.reshape(y_train_tr.shape[0],1,y_train_tr.shape[1])
-    w_dir = 'models' +os.sep + str(time_window) + os.sep + str(flare_class) 
+    #y_train_tr = y_train_tr.reshape(y_train_tr.shape[0],1,y_train_tr.shape[1])
+    #w_dir = 'models' +os.sep + str(time_window) + os.sep + str(flare_class) 
+    w_dir = 'interpret_models' +os.sep + str(time_window) + os.sep + str(flare_class) 
     model.fit(X_train, y_train_tr, epochs=epochs, verbose=2)
     model.save_weights(flare_class=None, w_dir=w_dir)
     

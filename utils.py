@@ -28,7 +28,8 @@ import platform
 import os
 import random
 from sklearn.preprocessing import LabelEncoder
-from keras.utils import np_utils
+from keras.utils import to_categorical
+import math
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 try:
@@ -55,7 +56,7 @@ supported_flare_class = ['C','M','M5']
 n_features = 14
 start_feature = 5
 mask_value = 0
-series_len = 10
+series_len = 1
 batch_size = 256
 nclass = 2
 noise_enabled=False
@@ -132,7 +133,7 @@ def parse_time(time):
 def load_data(datafile, flare_label, series_len, start_feature, n_features, mask_value, data =None):
     # print('Loading...', datafile, flare_label, series_len, start_feature, n_features, mask_value)
     if datafile is not None:
-        log('loading data from file:', datafile,verbose=False)
+        log('loading data from file:', datafile,verbose=True)
     if data is not None:
         df = data 
     else:
@@ -227,11 +228,17 @@ def load_data(datafile, flare_label, series_len, start_feature, n_features, mask
 
     # log('data shape:',X_arr.shape)
     return X_arr, y_arr,df
+
 def data_transform(data):
     encoder = LabelEncoder()
     encoder.fit(data)
     encoded_Y = encoder.transform(data)
-    converteddata = np_utils.to_categorical(encoded_Y)
+    converteddata = to_categorical(encoded_Y)
+    if len(np.unique(data)) < 2 and np.unique(data)[0] == 0:
+        zeros_arr = np.zeros(data.shape[0])
+        ones_arr = np.ones(data.shape[0])
+        converteddata_df = pd.DataFrame({0:zeros_arr.tolist(), 1:ones_arr.tolist()})
+        converteddata = converteddata_df.values
     return converteddata
 
 
@@ -298,7 +305,7 @@ def get_all_data(time_window, flare_class, noise_enabled=True):
     return get_data(flare_class,file_name, noise_enabled=noise_enabled)
 
 def get_training_data(time_window, flare_class):
-    file_name = 'data' + os.sep + 'testing_data_' + flare_class + '_' + time_window+'.csv'   
+    file_name = 'data' + os.sep + 'training_data_' + flare_class + '_' + time_window+'.csv'   
     return  get_data(flare_class,file_name, noise_enabled=True)
 
 def get_testing_data(time_window, flare_class):
@@ -321,10 +328,10 @@ def get_data(flare_class, datafile, noise_enabled=noise_enabled, verbose=True):
         if verbose:
             log(flare_class, '--> With Noise Training: Positive:', len(y_train) - len(neg_train) , 'Negative:', len(neg_train))
     else:
-        y_train=[get_class_num(c) for c in y_train_data]
+        y_train=[get_class_num(c) for c in y_train_data.tolist()]
         X_train = X_train_data
-
-    
+        X_train =np.array(X_train)
+        y_train =np.array(y_train)
     
     return X_train, y_train
 
