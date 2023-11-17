@@ -1,2 +1,5 @@
 logs/*
 *.pyc
+*.DS_Store
+*.png
+
