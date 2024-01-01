@@ -30,7 +30,7 @@ def train(time_window, flare_class):
     log('Training is initiated for time window:', time_window, 'and flare class:', flare_class,verbose=True)   
     X_train, y_train = get_training_data(time_window, flare_class)
     y_train_tr = data_transform(y_train)
-    epochs=1
+    epochs=10
     input_shape = (X_train.shape[1], X_train.shape[2])
     
     model = SolarFlareNet()
