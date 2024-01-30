@@ -24,7 +24,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 try:
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
-    #tf.compat.v1.disable_v2_behavior()
+    tf.compat.v1.disable_v2_behavior()
 except Exception as e:
     print('')
 from pprint import pprint
@@ -92,7 +92,7 @@ class SolarFlareNet:
         x = MultiHeadAttention(key_dim=head_size, num_heads=num_heads)(x, x)
         x = BatchNormalization(name='norm_' + name_postffix)(x)
         x = x + inputs
-        x = Conv1D(filters=ff_dim, kernel_size=inputs.shape[-2], activation="relu")(x)
+        x = Conv1D(filters=ff_dim, kernel_size=(inputs.shape[-2],), activation="relu")(x)
         x = Conv1D(filters=inputs.shape[-1], kernel_size=1)(x)
         x = LSTM(400, return_sequences=True, name=self.model_name+name_postffix + '_lstm')(x)        
         #self.model = x 
