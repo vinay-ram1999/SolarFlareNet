@@ -115,14 +115,17 @@ class SolarFlareNet:
         
     def predict(self,X_test,batch_size=None,verbose=0):
         return_slice = slice(None)
+        if batch_size ==  None:
+            if int(X_test.shape[0]/X_test.shape[-1]) == 0:
+                batch_size = 1
+            else:
+                batch_size = int(X_test.shape[0]/X_test.shape[-1])
         if isinstance(X_test, pd.DataFrame):
             X_test = X_test.to_numpy()
-            return_slice = 1
         if len(X_test.shape) == 2:
             assert self.input.shape[1] == 1
             X_test = X_test.reshape(X_test.shape[0], 1, X_test.shape[1])
-        if batch_size ==  None:
-            batch_size = int(X_test.shape[0]/X_test.shape[-1])
+            return_slice = 1
         predictions = self.model.predict(X_test, verbose=verbose, batch_size=batch_size)
         return predictions[:,return_slice]
     
