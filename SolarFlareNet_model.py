@@ -97,7 +97,7 @@ class SolarFlareNet:
                 if b == 0:
                     if verbose:
                         log('Loading multi head attention only..')
-                    model = (layers.MultiHeadAttention(key_dim=4, num_heads=4, dropout=0,name=self.model_name +'_mh'))(model,model)
+                    model = (layers.MultiHeadAttention(key_dim=4, num_heads=4, dropout=0,use_causal_mask=True,name=self.model_name +'_mh'))(model,model)
                 else:
                     if verbose:
                         log('Loading transformer encoder blocks..')
