@@ -68,11 +68,11 @@ class SolarFlareNet:
         model = BatchNormalization()(model)
         if b == 0:
             if verbose:
-                log('Loading multi head attention only..')
+                print('Loading multi head attention only..')
             model = (MultiHeadAttention(key_dim=4, num_heads=4, dropout=0,name=self.model_name +'_mh'))(model,model)
         else:
             if verbose:
-                log('Loading transformer encoder blocks..')
+                print('Loading transformer encoder blocks..')
             for i in range(b):
                 model = self.transformer_encoder(model,head_size=2,ff_dim=14,dropout=dropout, name_postffix='_enc'+str(i))
         model = Dropout(dropout)(model)
@@ -131,7 +131,8 @@ class SolarFlareNet:
     
     def save_weights(self, flare_class=None, w_dir=None, verbose=True):
         if w_dir is None and flare_class is None or str(flare_class) == '':
-            log('You must specify flare class to save the mode. flare_class is set to:', flare_class, verbose=True)
+            #log('You must specify flare class to save the mode. flare_class is set to:', flare_class, verbose=True)
+            print('You must specify flare class to save the mode. flare_class is set to:', flare_class)
             exit()        
         if w_dir is None:
             weight_dir = 'models' + os.sep + 'SolarFlareNet' + os.sep +  str(flare_class)  
@@ -142,19 +143,22 @@ class SolarFlareNet:
             shutil.rmtree(weight_dir)
         os.makedirs(weight_dir)
         if verbose:
-            log('Saving model weights to directory:', weight_dir,verbose=True)
+            #log('Saving model weights to directory:', weight_dir,verbose=True)
+            print('Saving model weights to directory:', weight_dir)
         self.model.save_weights(weight_dir + os.sep + 'model_weights')
     
     def load_weights(self, flare_class=None, w_dir=None, verbose=True):
         if w_dir is None and flare_class is None or str(flare_class) == '':
-            log('You must specify flare class to load the mode. flare_class is set to:', flare_class, verbose=True)
+            #log('You must specify flare class to load the mode. flare_class is set to:', flare_class, verbose=True)
+            print('You must specify flare class to load the mode. flare_class is set to:', flare_class)
             exit()
         if w_dir is None:
             weight_dir = 'models' + os.sep + 'SolarFlareNet' + os.sep + str(flare_class) 
         else:
             weight_dir = w_dir
         if verbose:
-            log('Loading weights from model dir:', weight_dir, verbose=True)
+            #log('Loading weights from model dir:', weight_dir, verbose=True)
+            print('Loading weights from model dir:', weight_dir)
         if not os.path.exists(weight_dir):
             print( 'Model weights directory:', weight_dir ,'does not exist, you may train a new model to create it for flare class:',flare_class)
             exit()

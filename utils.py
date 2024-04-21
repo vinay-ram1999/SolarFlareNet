@@ -133,7 +133,8 @@ def parse_time(time):
 def load_data(datafile, flare_label, series_len, start_feature, n_features, mask_value, data =None):
     # print('Loading...', datafile, flare_label, series_len, start_feature, n_features, mask_value)
     if datafile is not None:
-        log('loading data from file:', datafile,verbose=True)
+        #log('loading data from file:', datafile,verbose=True)
+        print('loading data from file:', datafile)
     if data is not None:
         df = data 
     else:
@@ -226,7 +227,7 @@ def load_data(datafile, flare_label, series_len, start_feature, n_features, mask
     X_arr = np.array(X)
     y_arr = np.array(y)
 
-    # log('data shape:',X_arr.shape)
+    # print('data shape:',X_arr.shape)
     return X_arr, y_arr,df
 
 def data_transform(data):
@@ -256,7 +257,7 @@ def add_gaussian_noise(flare_class,
                        X_train_data, 
                        y_train_data,
                        train_data_for_noise):
-    log('Adding Gaussian Noise')
+    print('Adding Gaussian Noise')
     mu=0.0
     noise_data= train_data_for_noise[train_data_for_noise.columns[start_feature:n_features]]
     std = 0.05 * np.std(noise_data)
@@ -321,12 +322,12 @@ def get_data(flare_class, datafile, noise_enabled=noise_enabled, verbose=True):
     
     neg_train = [ t for t in y_train_data if t == 'N' ]
     if verbose:
-        log(flare_class, '--> Training: Positive:', len(y_train_data) - len(neg_train) , 'Negative:', len(neg_train))
+        print(flare_class, '--> Training: Positive:', len(y_train_data) - len(neg_train) , 'Negative:', len(neg_train))
     if flare_class in ['M','M5'] and noise_enabled:
         X_train, y_train = add_gaussian_noise(flare_class, X_train_data,y_train_data,train_data_for_noise)
         neg_train = [ t for t in y_train if t == 0 ]
         if verbose:
-            log(flare_class, '--> With Noise Training: Positive:', len(y_train) - len(neg_train) , 'Negative:', len(neg_train))
+            print(flare_class, '--> With Noise Training: Positive:', len(y_train) - len(neg_train) , 'Negative:', len(neg_train))
     else:
         y_train=[get_class_num(c) for c in y_train_data.tolist()]
         X_train = X_train_data
@@ -354,7 +355,8 @@ def save_result(flare_class, time_window, y_true, y_pred,alg='SolarFlareNet', di
     os.makedirs(dir_name,  exist_ok=True) 
     if file_name is None:
         file_name = dir_name + os.sep + flare_class.strip().upper() + '_' + str(time_window)+ '.csv'
-    log('Saving result to file:', file_name,verbose=True)
+    #log('Saving result to file:', file_name,verbose=True)
+    print('Saving result to file:', file_name)
     h = open(file_name, 'w')
     h.write('FlareLabel,Prediction,PredictionProbability\n')
     matchings = []
@@ -365,4 +367,4 @@ def save_result(flare_class, time_window, y_true, y_pred,alg='SolarFlareNet', di
     h.close()
 
     
-create_log_file()
+#create_log_file()

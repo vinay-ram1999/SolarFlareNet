@@ -27,7 +27,8 @@ from SolarFlareNet_model import SolarFlareNet
 
 
 def train(time_window, flare_class):
-    log('Training is initiated for time window:', time_window, 'and flare class:', flare_class,verbose=True)   
+    #log('Training is initiated for time window:', time_window, 'and flare class:', flare_class,verbose=True)   
+    print('Training is initiated for time window:', time_window, 'and flare class:', flare_class)
     X_train, y_train = get_training_data(time_window, flare_class)
     y_train_tr = data_transform(y_train)
     epochs=10
