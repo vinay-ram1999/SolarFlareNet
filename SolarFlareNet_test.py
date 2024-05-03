@@ -48,7 +48,7 @@ def test(time_window, flare_class):
     print('Predicting test data set samples..')
     prediction = model.predict(X_test)
     save_result(flare_class,time_window, y_true, prediction, alg='SolarFlareNet')
-    return model, [X_train, y_train_tr], [X_test, y_test_tr]
+    return model, [X_train, y_train_tr], [X_test, y_test_tr], prediction
     
 if __name__ == '__main__':
     time_window = str(sys.argv[1]).strip().upper()
